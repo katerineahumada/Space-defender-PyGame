@@ -14,11 +14,10 @@ la parte superior de la pantalla y sobrevivir el mayor tiempo posible.
 - Sistema de vidas
 - Puntaje
 - Funciones personalizadas
-- Uso de clases (opcional)
 
 ## Tecnologías utilizadas
 - Python 3
-- PyGame (NO PGZero)
+- PyGame
 
 ## Ejecución del proyecto
 Este proyecto fue desarrollado para ejecutarse de forma local, ya que PyGame
@@ -32,10 +31,5 @@ Para ejecutarlo:
 2. Ejecutar el archivo principal:
    python main.py
 
-## Entrega
-El proyecto se entrega mediante un repositorio público en GitHub,
-desde donde el código puede ser revisado y descargado.
-
 ## Autor
 Katerine Ahumada  
-Año: 2022
