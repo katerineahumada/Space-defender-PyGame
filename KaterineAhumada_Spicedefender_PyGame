@@ -1,0 +1,109 @@
+import pygame
+import random
+import sys
+
+pygame.init()
+
+WIDTH, HEIGHT = 800, 600
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Space Defender")
+clock = pygame.time.Clock()
+
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
+BLACK = (0, 0, 0)
+
+font = pygame.font.SysFont(None, 36)
+
+class Player(pygame.Rect):
+    def __init__(self):
+        super().__init__(WIDTH // 2, HEIGHT - 60, 50, 50)
+        self.speed = 7
+
+    def move(self, keys):
+        if keys[pygame.K_LEFT] and self.left > 0:
+            self.x -= self.speed
+        if keys[pygame.K_RIGHT] and self.right < WIDTH:
+            self.x += self.speed
+
+class Enemy(pygame.Rect):
+    def __init__(self):
+        x = random.randint(0, WIDTH - 40)
+        super().__init__(x, 0, 40, 40)
+        self.speed = random.randint(3, 6)
+
+    def move(self):
+        self.y += self.speed
+
+def draw_text(text, x, y):
+    img = font.render(text, True, WHITE)
+    screen.blit(img, (x, y))
+
+def main_menu():
+    while True:
+        screen.fill(BLACK)
+        draw_text("SPACE DEFENDER", 260, 200)
+        draw_text("Presiona ENTER para jugar", 230, 260)
+        draw_text("ESC para salir", 300, 310)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    game_loop()
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+
+        pygame.display.update()
+        clock.tick(60)
+
+def game_loop():
+    player = Player()
+    enemies = []
+    score = 0
+    lives = 3
+    enemy_timer = 0
+
+    running = True
+    while running:
+        screen.fill(BLACK)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        keys = pygame.key.get_pressed()
+        player.move(keys)
+
+        enemy_timer += 1
+        if enemy_timer > 40:
+            enemies.append(Enemy())
+            enemy_timer = 0
+
+        for enemy in enemies[:]:
+            enemy.move()
+            if enemy.colliderect(player):
+                enemies.remove(enemy)
+                lives -= 1
+            elif enemy.top > HEIGHT:
+                enemies.remove(enemy)
+                score += 1
+
+        if lives <= 0:
+            return
+
+        pygame.draw.rect(screen, WHITE, player)
+        for enemy in enemies:
+            pygame.draw.rect(screen, RED, enemy)
+
+        draw_text(f"Puntaje: {score}", 10, 10)
+        draw_text(f"Vidas: {lives}", 10, 40)
+
+        pygame.display.update()
+        clock.tick(60)
+
+main_menu()
